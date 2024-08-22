@@ -1,16 +1,28 @@
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import FormButton from "../../Shared-Components/FormButton/FormButton";
 import FormInput from "../../Shared-Components/FormInput/FormInput";
 import { faEnvelope, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
+import { authContext } from "../../Context/AuthContext/AuthContext";
 
 const Profile = () => {
   const { theme } = useTheme();
+  const { profile, updateUserAction } = useContext(authContext);
   const [formData, setFormData] = useState({
-    email: "test@test.com",
-    name: "John Cena",
+    email: profile?.user?.email,
+    name: profile?.user?.name,
   });
+  const [isSubmitDisabled, setIsSubmitDisabled] = useState(
+    formData.email == profile?.user?.email &&
+      formData.name == profile?.user?.name
+  );
+  useEffect(() => {
+    setIsSubmitDisabled(
+      formData.email == profile?.user?.email &&
+        formData.name == profile?.user?.name
+    );
+  }, [formData]);
 
   const styles = StyleSheet.create({
     screen: {
@@ -56,7 +68,9 @@ const Profile = () => {
   const onChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    updateUserAction(formData);
+  };
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.titleContainer}>
@@ -82,7 +96,11 @@ const Profile = () => {
           handleChange={onChange}
         />
 
-        <FormButton name={"Update"} />
+        <FormButton
+          name={"Update"}
+          disabled={isSubmitDisabled}
+          onPress={onSubmit}
+        />
       </View>
     </SafeAreaView>
   );

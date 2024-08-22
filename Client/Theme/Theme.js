@@ -12,7 +12,7 @@ export const lightTheme = {
     secondary200: "",
     secondary300: "",
     card_text_primary: "#000",
-
+    text_error: "red",
     text_primary: "#000",
     text_secondary: "#555",
     text_tertiery: "#157DEF",
@@ -50,6 +50,7 @@ export const darkTheme = {
     text_secondary: "#777",
     text_tertiery: "#157DEF",
     text_primary_inverted: "#fff",
+    text_error: "red",
     borderActive: "#157DEF",
     borderInactive: "#555",
     cardBorderSeperator: "#555",

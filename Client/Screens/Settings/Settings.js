@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import SingleSetting from "./SingleSetting";
 import {
   faBug,
@@ -31,7 +31,11 @@ import { authContext } from "../../Context/AuthContext/AuthContext";
 const Settings = () => {
   const { theme } = useTheme();
   const nav = useNavigation();
-  const { logoutUserAction, deleteUserAction } = useContext(authContext);
+  const { logoutUserAction, deleteUserAction, getUserAction } =
+    useContext(authContext);
+  useEffect(() => {
+    getUserAction();
+  }, []);
   const styles = StyleSheet.create({
     screen: {
       width: "100%",

@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 
-const FormButton = ({ onPress, name }) => {
+const FormButton = ({ onPress, name, disabled = false }) => {
   const { theme } = useTheme();
   const styles = StyleSheet.create({
     buttonContainer: {
@@ -19,7 +19,11 @@ const FormButton = ({ onPress, name }) => {
     },
   });
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+    <TouchableOpacity
+      style={styles.buttonContainer}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <Text style={styles.buttonText}>{name}</Text>
     </TouchableOpacity>
   );

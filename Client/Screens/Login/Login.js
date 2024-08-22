@@ -16,7 +16,7 @@ import { authContext } from "../../Context/AuthContext/AuthContext";
 const Login = () => {
   const navigator = useNavigation();
   const { theme } = useTheme();
-  const { loginUserAction, loading } = useContext(authContext);
+  const { loginUserAction, loading, error } = useContext(authContext);
   const [formData, setFormData] = useState({ email: "", password: "" });
   const onChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -74,6 +74,12 @@ const Login = () => {
       fontWeight: theme.font_weight.message,
       color: theme.colors.text_primary,
     },
+    error: {
+      width: "90%",
+      textAlign: "center",
+      fontWeight: theme.font_weight.message,
+      color: theme.colors.text_error,
+    },
   });
 
   return (
@@ -86,7 +92,9 @@ const Login = () => {
       </View>
 
       <View style={styles.FormContainer}>
+        {error && <Text style={styles.error}>{error}</Text>}
         <FormInput
+          autoCaps={false}
           name={"Email"}
           icon={faUser}
           value={formData.email}
@@ -94,6 +102,7 @@ const Login = () => {
           id={"email"}
         />
         <FormInput
+          autoCaps={false}
           name={"Password"}
           type={"password"}
           value={formData.password}

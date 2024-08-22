@@ -11,7 +11,7 @@ import { fa0 } from "@fortawesome/free-solid-svg-icons";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
 
-const FormInput = ({ name, type, value, icon, handleChange, id }) => {
+const FormInput = ({ name, type, value, icon, handleChange, id, autoCaps }) => {
   const { theme } = useTheme();
 
   const [isFocus, changeIsFocus] = useState(false);
@@ -56,14 +56,13 @@ const FormInput = ({ name, type, value, icon, handleChange, id }) => {
       <View style={styles.inputContainer}>
         <Text style={styles.title}>{name}</Text>
         <TextInput
+          autoCapitalize={autoCaps}
           value={value}
           onBlur={onBlur}
           onFocus={onFocus}
           secureTextEntry={type === "password" && !isVisible}
           style={styles.input}
-          onChange={(text) => {
-            handleChange(id, text);
-          }}
+          onChangeText={(text) => handleChange(id, text)}
         />
       </View>
       {type == "password" ? (

@@ -1,15 +1,21 @@
-import { View, Text, SafeAreaView, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import { View, Text, SafeAreaView, StyleSheet, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 import FormButton from "../../Shared-Components/FormButton/FormButton";
 import FormInput from "../../Shared-Components/FormInput/FormInput";
 import { faEnvelope, faLock, faUser } from "@fortawesome/free-solid-svg-icons";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
+import { authContext } from "../../Context/AuthContext/AuthContext";
 
 const Privacy_Security = () => {
+  const { updateUserAction } = useContext(authContext);
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
   });
+  const [disabled, setDisabled] = useState(formData.password.length < 4);
+  useEffect(() => {
+    setDisabled(formData.password.length < 4);
+  }, [formData]);
   const { theme } = useTheme();
   const styles = StyleSheet.create({
     screen: {
@@ -55,7 +61,16 @@ const Privacy_Security = () => {
   const onChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    if (formData.confirmPassword != formData.password) {
+      return Alert.alert(
+        "Passwords Do Not Match",
+        "The password and confirm password fields do not match. Please try again.",
+        [{ text: "OK" }]
+      );
+    }
+    updateUserAction({ password: formData.password });
+  };
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.titleContainer}>
@@ -84,7 +99,7 @@ const Privacy_Security = () => {
           type={"password"}
         />
 
-        <FormButton name={"Update"} />
+        <FormButton name={"Update"} disabled={disabled} onPress={onSubmit} />
       </View>
     </SafeAreaView>
   );

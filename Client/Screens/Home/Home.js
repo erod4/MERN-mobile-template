@@ -1,9 +1,14 @@
 import { View, Text, SafeAreaView, StyleSheet } from "react-native";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { height, width } from "@fortawesome/free-brands-svg-icons/fa42Group";
 import { useTheme } from "../../Context/ThemeContext/ThemeContext";
+import { authContext } from "../../Context/AuthContext/AuthContext";
 
 const Home = () => {
+  const { getUserAction } = useContext(authContext);
+  useEffect(() => {
+    getUserAction();
+  }, []);
   const { theme } = useTheme();
   const styles = StyleSheet.create({
     screen: {

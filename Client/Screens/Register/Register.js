@@ -6,7 +6,9 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
+
 import React, { useState, useContext } from "react";
 import FormInput from "../../Shared-Components/FormInput/FormInput";
 import FormButton from "../../Shared-Components/FormButton/FormButton";
@@ -36,18 +38,17 @@ const Register = () => {
       formData.password < 4 ||
       formData.confirmPassword < 4
     ) {
-      Alert.alert(
+      return Alert.alert(
         "Validation Error",
         "Please ensure all fields are filled out correctly. Use a valid email address and only letters for the name."
       );
     } else if (formData.password.length != formData.confirmPassword.length) {
-      Alert.alert(
+      return Alert.alert(
         "Password Mismatch",
         "Passwords do not match. Please make sure that the 'Password' and 'Confirm Password' fields are identical."
       );
-    } else {
-      registerUserAction(formData);
     }
+    registerUserAction(formData);
   };
   const onSignUpPress = () => {
     navigator.navigate("login");
@@ -108,6 +109,7 @@ const Register = () => {
 
       <View style={styles.FormContainer}>
         <FormInput
+          autoCaps={false}
           name={"Email"}
           icon={faEnvelope}
           value={formData.email}
@@ -115,6 +117,7 @@ const Register = () => {
           id={"email"}
         />
         <FormInput
+          autoCaps={true}
           name={"Full Name"}
           icon={faUser}
           value={formData.name}
@@ -123,6 +126,7 @@ const Register = () => {
         />
 
         <FormInput
+          autoCaps={false}
           name={"Password"}
           type={"password"}
           value={formData.password}
@@ -132,7 +136,7 @@ const Register = () => {
         <FormInput
           name={"Confirm Password"}
           type={"password"}
-          value={formData.confirmpassword}
+          value={formData.confirmPassword}
           handleChange={onChange}
           id={"confirmPassword"}
         />

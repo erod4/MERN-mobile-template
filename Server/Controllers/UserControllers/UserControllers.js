@@ -61,7 +61,8 @@ const get_profile = async (req, res, next) => {
   const id = req.user;
   try {
     const userFound = await User.findById(id);
-    res.json(userFound);
+
+    res.json({ user: userFound });
   } catch (error) {
     return next(new AppErr(error.message, 500));
   }

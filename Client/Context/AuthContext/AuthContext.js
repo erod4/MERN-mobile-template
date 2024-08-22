@@ -1,5 +1,7 @@
 import { createContext, useEffect, useReducer } from "react";
 import {
+  DELETE_PROFILE_FAIL,
+  DELETE_PROFILE_SUCCESS,
   FETCH_PROFILE_FAILED,
   FETCH_PROFILE_SUCCESS,
   LOADING,
@@ -7,8 +9,10 @@ import {
   LOGIN_SUCCESS,
   LOGOUT,
   REGISTER_FAILED,
+  REGISTER_SUCCESS,
   RESET_ERROR,
   SEND_RESET_CODE_FAILED,
+  UPDATE_PROFILE_SUCCESS,
   VERIFY_RESET_CODE_FAILED,
 } from "./AuthContextTypes";
 
@@ -42,6 +46,8 @@ const reducer = (state, action) => {
 
     case LOGIN_FAILED:
       return { ...state, error: payload, loading: false };
+    case REGISTER_SUCCESS:
+      return { ...state, userAuth: payload };
     case FETCH_PROFILE_SUCCESS:
       return {
         ...state,
@@ -54,7 +60,20 @@ const reducer = (state, action) => {
         ...state,
         error: payload,
         loading: false,
+      };
+    case DELETE_PROFILE_SUCCESS:
+      return {
+        ...state,
+        error: null,
+        loading: false,
         profile: null,
+        userAuth: null,
+      };
+    case DELETE_PROFILE_FAIL:
+      return {
+        ...state,
+        error: payload,
+        loading: false,
       };
     case RESET_ERROR:
       return {
@@ -76,16 +95,14 @@ const AuthContextProvider = ({ children }) => {
     const config = { headers: { "Content-Type": "application/json" } };
     try {
       dispatch({ type: LOADING, payload: true });
-      //   console.log(url);
-      //   const res = await axios.post(`${url}/users/login`, formData, config);
-      //   if (res?.data?.status == "Success") {
-      //     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-      //   }
-      navigator.navigate("main");
+      const res = await axios.post(`${url}users/login`, formData, config);
+      if (res?.data?.status == "Success") {
+        dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+        navigator.navigate("main");
+      }
 
       dispatch({ type: LOADING, payload: false });
     } catch (error) {
-      console.log(error);
       console.log(error?.response?.data?.message);
       dispatch({ type: LOGIN_FAILED, payload: error?.response?.data?.message });
     }
@@ -94,17 +111,18 @@ const AuthContextProvider = ({ children }) => {
     const config = { headers: { "Content-Type": "application/json" } };
     try {
       dispatch({ type: LOADING, payload: true });
-      //   console.log(url);
-      //   const res = await axios.post(`${url}/users/login`, formData, config);
-      //   if (res?.data?.status == "Success") {
-      //     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
-      //   }
-      navigator.navigate("main");
+      const res = await axios.post(`${url}users/register`, formData, config);
+
+      if (res?.data?.status == "Success") {
+        dispatch({ type: REGISTER_SUCCESS, payload: res.data });
+
+        navigator.navigate("main");
+      }
 
       dispatch({ type: LOADING, payload: false });
     } catch (error) {
-      console.log(error);
-      console.log(error?.response?.data?.message);
+      dispatch({ type: LOADING, payload: false });
+
       dispatch({
         type: REGISTER_FAILED,
         payload: error?.response?.data?.message,
@@ -125,8 +143,6 @@ const AuthContextProvider = ({ children }) => {
 
       dispatch({ type: LOADING, payload: false });
     } catch (error) {
-      console.log(error);
-      console.log(error?.response?.data?.message);
       dispatch({
         type: SEND_RESET_CODE_FAILED,
         payload: error?.response?.data?.message,
@@ -165,19 +181,51 @@ const AuthContextProvider = ({ children }) => {
     try {
       dispatch({ type: LOADING, payload: true });
 
-      //   const res = await axios.get(`${url}/users/getUser`, config);
-      //   if (res?.data) {
-      //     dispatch({
-      //       type: FETCH_PROFILE_SUCCESS,
-      //       payload: res.data,
-      //     });
-      //   }
+      const res = await axios.get(`${url}users/`, config);
+      console.log(res.data);
+
+      if (res?.data) {
+        dispatch({
+          type: FETCH_PROFILE_SUCCESS,
+          payload: res.data,
+        });
+      }
       dispatch({ type: LOADING, payload: false });
     } catch (error) {
       dispatch({
         type: FETCH_PROFILE_FAILED,
         payload: error?.response?.data?.message,
       });
+      dispatch({ type: LOADING, payload: false });
+    }
+  };
+  const updateUserAction = async (formData) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state?.userAuth?.token}`,
+      },
+    };
+    try {
+      dispatch({ type: LOADING, payload: true });
+
+      const res = await axios.put(`${url}users/`, formData, config);
+
+      if (res?.data?.status == "Success") {
+        dispatch({
+          type: UPDATE_PROFILE_SUCCESS,
+          payload: null,
+        });
+        await getUserAction();
+        navigator.navigate("Settings");
+      }
+      dispatch({ type: LOADING, payload: false });
+    } catch (error) {
+      dispatch({
+        type: UPDATE_PROFILE_SUCCESS,
+        payload: error?.response?.data?.message,
+      });
+      dispatch({ type: LOADING, payload: false });
     }
   };
   //clear error message after 3 seconds
@@ -195,7 +243,31 @@ const AuthContextProvider = ({ children }) => {
     navigator.navigate("login");
   };
   const deleteUserAction = async () => {
-    navigator.navigate("login");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state?.userAuth?.token}`,
+      },
+    };
+    try {
+      dispatch({ type: LOADING, payload: true });
+
+      const res = await axios.delete(`${url}users/`, config);
+
+      if (res?.data?.status == "Success") {
+        dispatch({
+          type: DELETE_PROFILE_SUCCESS,
+        });
+        navigator.navigate("login");
+      }
+      dispatch({ type: LOADING, payload: false });
+    } catch (error) {
+      dispatch({
+        type: FETCH_PROFILE_FAILED,
+        payload: error?.response?.data?.message,
+      });
+      dispatch({ type: LOADING, payload: false });
+    }
   };
   return (
     <authContext.Provider
@@ -203,6 +275,7 @@ const AuthContextProvider = ({ children }) => {
         loginUserAction,
         deleteUserAction,
         logoutUserAction,
+        updateUserAction,
         getUserAction,
         registerUserAction,
         sendResetCode,
