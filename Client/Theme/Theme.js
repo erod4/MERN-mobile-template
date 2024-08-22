@@ -1,0 +1,66 @@
+// themes.js
+export const lightTheme = {
+  colors: {
+    activeTintColor: "#157DEF",
+    inactiveTintColor: "#999",
+    backgroundColor: "#E4E7EC",
+    cardColor: "#fcfcfd",
+    primary100: "#157DEF",
+    primary200: "#1570EF",
+    primary300: "#2E9DFA",
+    secondary100: "",
+    secondary200: "",
+    secondary300: "",
+    card_text_primary: "#000",
+
+    text_primary: "#000",
+    text_secondary: "#555",
+    text_tertiery: "#157DEF",
+    text_primary_inverted: "#fff",
+    borderActive: "#157DEF",
+    borderInactive: "#000",
+    cardBorderSeperator: "#ddd",
+    deleteBackground: "#faccce",
+    delete_text: "#7c4555",
+  },
+  font: {},
+  font_weight: {
+    title: "700",
+    message: "500",
+  },
+  font_size: { small: 12, medium: 15, large: 18, xLarge: 21, xxLarge: 24 },
+  border: {},
+};
+
+export const darkTheme = {
+  colors: {
+    activeTintColor: "#157DEF",
+    inactiveTintColor: "#999",
+    backgroundColor: "#222222",
+    cardColor: "#121212",
+
+    primary100: "#157DEF",
+    primary200: "#1570EF",
+    primary300: "#2E9DFA",
+    secondary100: "",
+    secondary200: "",
+    secondary300: "",
+    card_text_primary: "#999",
+    text_primary: "#fff",
+    text_secondary: "#777",
+    text_tertiery: "#157DEF",
+    text_primary_inverted: "#fff",
+    borderActive: "#157DEF",
+    borderInactive: "#555",
+    cardBorderSeperator: "#555",
+    deleteBackground: "#faccce",
+    delete_text: "#7c4555",
+  },
+  font: {},
+  font_weight: {
+    title: "700",
+    message: "500",
+  },
+  font_size: { small: 12, medium: 15, large: 18, xLarge: 21, xxLarge: 24 },
+  border: {},
+};
